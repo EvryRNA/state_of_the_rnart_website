@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Abel';
+    src: url('font/Abel/Abel-Regular.ttf');
+}
+
+body {
+    text-align: center;
+    font-family: "Abel";
+}
