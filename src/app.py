@@ -7,14 +7,16 @@ from src.enums.enums import (STYLE_TITLE, TEXT_FIRST_CASE, TEXT_SECOND_CASE, BUT
 from src.viz.viz_tables import VizTables
 from src.viz.viz_heatmap import VizHeatmap
 
+app = dash.Dash(external_stylesheets=[dbc.themes.MORPH], suppress_callback_exceptions=True)
+
 
 class DashHelper:
-    def __init__(self, native_path: str, rna_dir: str, scores_dir: str, casp_rna_native: str, casp_rna_dir: str):
+    def __init__(self, app, native_path: str, rna_dir: str, scores_dir: str, casp_rna_native: str, casp_rna_dir: str):
         """
         :param native_path: path to native structures
         :param rna_dir: path to the aligned structures
         """
-        self.app = dash.Dash(external_stylesheets=[dbc.themes.MORPH], suppress_callback_exceptions=True)
+        self.app = app
         self.native_path = native_path
         self.rna_dir = rna_dir
         self.casp_rna_native = casp_rna_native
@@ -220,7 +222,8 @@ class DashHelper:
 
 
 if __name__ == "__main__":
-    params = {"native_path": "data/rna_puzzles/native",
+    params = {"app": app,
+              "native_path": "data/rna_puzzles/native",
               "rna_dir": "data/rna_puzzles/aligned",
               "scores_dir": "data/rna_puzzles/scores",
               "casp_rna_native": "data/casp_rna/native",
@@ -228,4 +231,5 @@ if __name__ == "__main__":
               }
     dash_helper = DashHelper(**params)
     app = dash_helper.run()
+    server = app.server
     app.run_server(debug=False, port=8050, host='0.0.0.0')
