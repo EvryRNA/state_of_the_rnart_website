@@ -8,6 +8,7 @@ from src.viz.viz_tables import VizTables
 from src.viz.viz_heatmap import VizHeatmap
 
 app = dash.Dash(external_stylesheets=[dbc.themes.MORPH], suppress_callback_exceptions=True)
+server = app.server
 
 
 class DashHelper:
@@ -232,4 +233,4 @@ if __name__ == "__main__":
     dash_helper = DashHelper(**params)
     app = dash_helper.run()
     server = app.server
-    app.run_server(debug=False, port=8050, host='0.0.0.0')
+    app.run_server(debug=True, port=8050)
