@@ -220,16 +220,15 @@ class DashHelper:
         return self.app
 
 
-if __name__ == "__main__":
-    app = dash.Dash(external_stylesheets=[dbc.themes.MORPH], suppress_callback_exceptions=True)
-    params = {"app": app,
-              "native_path": "data/rna_puzzles/native",
-              "rna_dir": "data/rna_puzzles/aligned",
-              "scores_dir": "data/rna_puzzles/scores",
-              "casp_rna_native": "data/casp_rna/native",
-              "casp_rna_dir": "data/casp_rna/aligned",
-              }
-    dash_helper = DashHelper(**params)
-    app = dash_helper.run()
-    server = app.server
-    app.run_server(debug=True, port=8050)
+app = dash.Dash(external_stylesheets=[dbc.themes.MORPH], suppress_callback_exceptions=True)
+params = {"app": app,
+          "native_path": "data/rna_puzzles/native",
+          "rna_dir": "data/rna_puzzles/aligned",
+          "scores_dir": "data/rna_puzzles/scores",
+          "casp_rna_native": "data/casp_rna/native",
+          "casp_rna_dir": "data/casp_rna/aligned",
+          }
+dash_helper = DashHelper(**params)
+app = dash_helper.run()
+server = app.server
+app.run_server(debug=True, port=8050)
