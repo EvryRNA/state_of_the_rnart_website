@@ -6,6 +6,7 @@ from src.enums.enums import (STYLE_TITLE, TEXT_FIRST_CASE, TEXT_SECOND_CASE, BUT
 
 from src.viz.viz_tables import VizTables
 from src.viz.viz_heatmap import VizHeatmap
+import flask
 
 
 
@@ -220,7 +221,9 @@ class DashHelper:
         return self.app
 
 
-app = dash.Dash(external_stylesheets=[dbc.themes.MORPH], suppress_callback_exceptions=True)
+server = flask.Flask(__name__) # define flask app.server
+
+app = dash.Dash(external_stylesheets=[dbc.themes.MORPH], suppress_callback_exceptions=True, server = server)
 params = {"app": app,
           "native_path": "data/rna_puzzles/native",
           "rna_dir": "data/rna_puzzles/aligned",
@@ -230,5 +233,5 @@ params = {"app": app,
           }
 dash_helper = DashHelper(**params)
 app = dash_helper.run()
-server = app.server
-app.run_server(debug=True, port=8050)
+if __name__ == "__main__":
+    app.run_server(debug=True)
