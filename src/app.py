@@ -7,8 +7,6 @@ from src.enums.enums import (STYLE_TITLE, TEXT_FIRST_CASE, TEXT_SECOND_CASE, BUT
 from src.viz.viz_tables import VizTables
 from src.viz.viz_heatmap import VizHeatmap
 
-app = dash.Dash(external_stylesheets=[dbc.themes.MORPH], suppress_callback_exceptions=True)
-server = app.server
 
 
 class DashHelper:
@@ -223,6 +221,7 @@ class DashHelper:
 
 
 if __name__ == "__main__":
+    app = dash.Dash(external_stylesheets=[dbc.themes.MORPH], suppress_callback_exceptions=True)
     params = {"app": app,
               "native_path": "data/rna_puzzles/native",
               "rna_dir": "data/rna_puzzles/aligned",
