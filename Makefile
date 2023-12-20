@@ -1,5 +1,5 @@
 run:
-	python -m src.dash_helper
+	python -m src.app
 
 docker_start:
 	docker build -t state_of_the_rnart_website .

@@ -33,7 +33,6 @@ METRICS = [
 SUB_METRICS = ["RMSD", "P-VALUE", "DI", "εRMSD", "TM-score", "GDT-TS", "INF-ALL", "lDDT"]
 ALL_MODELS = [
     "mcsym",
-    "ifoldrna",
     "vfold",
     "vfoldpipeline",
     "rnacomposer",
@@ -78,7 +77,6 @@ RNA_NAMES = [
 ]
 MODELS_TO_GROUP = {
     "MC-Sym": "Template-based",
-    "iFoldRNA": "Ab initio",
     "Vfold3D": "Template-based",
     "Vfold-Pipeline": "Template-based",
     "RNAComposer": "Template-based",

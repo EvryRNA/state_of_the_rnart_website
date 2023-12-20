@@ -39,7 +39,7 @@ TEXT_FIRST_CASE = {
 TEXT_SECOND_CASE = {
     "H2": "CASP-RNA",
     "H3": "CASP-RNA is a collaboration between CASP organizers and RNA-Puzzles. It is composed of 12 RNA molecules for the CASP15 competition.",
-    "LINK": "",
+    "LINK": "https://predictioncenter.org/casp15/",
     "IMAGE": "url('assets/img/performance.png')"
 }
 

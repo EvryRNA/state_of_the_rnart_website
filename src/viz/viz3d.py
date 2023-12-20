@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Any
 
 from dash import Dash, dcc, html, Input, Output, callback
 import os
@@ -7,6 +7,7 @@ from src.enums.enums import (NAMES_CLEAN, STYLE_H, STYLE_SCORE)
 from dash_bio.utils import PdbParser, create_mol3d_style
 import dash_bio
 
+from Bio import PDB
 import dash
 
 
@@ -20,6 +21,9 @@ class Viz3D:
         self.native_path = native_path
         self.rna_dir = rna_dir
         self.all_challenges = sorted(os.listdir(self.rna_dir))
+        # Drop R1117 for the moment
+        if "R1117" in self.all_challenges:
+            self.all_challenges.remove("R1117")
         self.dir_names = {rna: os.path.join(self.rna_dir, rna) for rna in self.all_challenges}
         self.names_to_path = {
             rna: {get_name_from_path(name): name for name in os.listdir(self.dir_names[rna]) if
@@ -34,7 +38,6 @@ class Viz3D:
                      prevent_initial_call=True, suppress_callback_exceptions=True
                           )(self.update_challenge)
 
-
     def get_native_plot(self):
         return [
             html.Div(id=f"native_molecule_{self.puzzle}",
@@ -44,7 +47,8 @@ class Viz3D:
 
     def get_all_plots_3d(self):
         return [html.Div(id=f"all_challenges_methods_{self.puzzle}",
-                 children=[self.get_challenges_all_methods(self.all_challenges[0])],
+                 children=[
+                     self.get_challenges_all_methods(self.all_challenges[0])],
                  )]
 
     def get_challenges_all_methods(self, rna_challenge: str):
@@ -171,19 +175,34 @@ class Viz3D:
             data["atoms"],
             visualization_type="cartoon",
             color_element="chain",
-            color_scheme={"A": "red"} if is_native else {"A": "blue", "B": "red"},
+            color_scheme = self.get_color_scheme(data, is_native),
         )
         content = dash_bio.Molecule3dViewer(
             modelData=data,
             styles=style,
             backgroundColor="#9BB8CD",
-            backgroundOpacity=0.5,
+            backgroundOpacity=0.4,
             width=width,
             height=height,
             style={"width": width, "height": height, "textAlign": "center", "margin": "0 auto"}
         )
         return content
 
+    def get_color_scheme(self, data: Any, is_native: bool):
+        chains = list(set([atom.get("chain", 65) for atom in data.get("atoms", {})]))
+        orders = [ord(id) for id in chains]
+        max_order = max(orders)
+        index_max = max_order+1 if is_native else max_order
+        if is_native:
+            color_scheme = {chr(chain_id).upper(): "red" for chain_id in range(65, index_max)}
+        else:
+            color_scheme = {chr(chain_id).upper(): "blue" for chain_id in range(65, index_max)}
+            color_scheme[chr(max_order).upper()] = "red"
+        if "1" in chains and "A" in chains:
+            color_scheme["1"] = "red"
+            color_scheme["A"] = "blue"
+        color_scheme["0"] = "red"
+        return color_scheme
 
     def update_challenge(self, value):
         if value is None:

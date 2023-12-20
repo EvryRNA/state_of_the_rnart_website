@@ -122,9 +122,9 @@ class DashHelper:
                               ],
                 ),
             ],
-            style={"background-color": "#b5c9da", "width": "100%",
+            style={"background-color": "#b5c9da", "width": "80%",
                    "text-align": "center", "justify-content": "center",
-                   "margin": "0 auto"}
+                   "margin": "0 auto", "border-radius": "5px", "padding": "20px"}
         )
 
 
@@ -171,7 +171,7 @@ class DashHelper:
 
     def get_button_choose_benchmark(self):
         return html.Div([
-            html.H2("Choose a benchmark:", style={"color": "black", "fontSize": "25px"}),
+            html.H2("Choose a benchmark:", style={"color": "black", "fontSize": "35px"}),
             html.Div([
                 html.Button("RNA-Puzzles", id="button-rna_puzzles", n_clicks=0,
                             style={**BUTTON_STYLE, **{"color": "black"}}),
@@ -228,4 +228,4 @@ if __name__ == "__main__":
               }
     dash_helper = DashHelper(**params)
     app = dash_helper.run()
-    app.run_server(port=8050, host='0.0.0.0')
+    app.run_server(debug=False, port=8050, host='0.0.0.0')
