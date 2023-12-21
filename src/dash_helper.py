@@ -1,3 +1,5 @@
+import time
+
 from dash import Dash, dcc, html, Input, Output, callback, ctx
 import dash
 import dash_bootstrap_components as dbc
@@ -38,6 +40,10 @@ class DashHelper:
                           dash.dependencies.Input('button-casp', 'n_clicks'),
                           prevent_initial_call=True, suppress_callback_exceptions=True
                           )(self.update_benchmark)
+        # self.app.callback(dash.dependencies.Output("loading-output", "children"),
+        #                   dash.dependencies.Input("dropdown_challenges_rna_puzzles", "value"),
+        #                   dash.dependencies.Input("dropdown_challenges_casp", "value")
+        #                   )(self.callback_loading)
     def get_viz(self):
         if self.challenge == "rna_puzzles":
             viz = self.viz3d
@@ -178,10 +184,15 @@ class DashHelper:
                 html.Button("RNA-Puzzles", id="button-rna_puzzles", n_clicks=0,
                             style={**BUTTON_STYLE, **{"color": "black"}}),
                 html.Button("CASP-RNA", id="button-casp", n_clicks=0, style={**BUTTON_STYLE, **{"color": "white", "background-color": "#4682A9"}}),
+                # dcc.Loading(id="loading-input", children = [html.Div(id="loading-output")], type = "circle")
             ],
                 style = {"display": "flex", "justify-content": "center", "align-items": "center", "width": "30%", "margin": "0 auto", "padding": "20px", "text-align": "center",}
             ),
             ])
+
+    # def callback_loading(self, value):
+    #     print("callback_loading", value)
+    #     return value
 
     def update_benchmark(self, btn1, btn2):
         if "button-rna_puzzles" == ctx.triggered_id:

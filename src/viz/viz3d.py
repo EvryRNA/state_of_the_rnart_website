@@ -1,3 +1,4 @@
+import time
 from typing import List, Dict, Any
 
 from dash import Dash, dcc, html, Input, Output, callback
@@ -37,6 +38,11 @@ class Viz3D:
                           dash.dependencies.Input(f'dropdown_challenges_{puzzle}', 'value'),
                      prevent_initial_call=True, suppress_callback_exceptions=True
                           )(self.update_challenge)
+
+        app.callback(dash.dependencies.Output(f"loading-output_{puzzle}", "children"),
+                          dash.dependencies.Input(f"dropdown_challenges_{puzzle}", "value"),
+                          # dash.dependencies.Input("dropdown_challenges_casp", "value")
+                          )(self.callback_loading)
 
     def get_native_plot(self):
         return [
@@ -161,12 +167,19 @@ class Viz3D:
                 style={ 'width': '20%', 'margin': '0 auto',
                        'height': '50px', "border-radius": "15px", "fontSize": "30px", "color": "blac"}
             ),
+            dcc.Loading(id=f"loading-input_{self.puzzle}", children=[html.Div(id=f"loading-output_{self.puzzle}")],
+                        type="default"),
             html.Br(),
             html.H3(f"Native {rna_challenge}", style=STYLE_H),
             content,
         ]
         div = html.Div(id = f"native_structure_{self.puzzle}", children=children, style={"width": "100"})
         return div
+
+    def callback_loading(self, value):
+        # time.sleep(1)
+        # print("callback_loading", value)
+        return None
 
     def get_viz_3d_data(self, in_path: str, width=450, height=450, is_native: bool = False):
         parser = PdbParser(in_path)
