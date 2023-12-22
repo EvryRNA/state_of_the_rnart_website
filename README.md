@@ -2,7 +2,7 @@
 
 This repository is the source code for the website State-of-the-RNArt. 
 
-![State-of-the-RNArt website](img/screenshow_website.png)
+![State-of-the-RNArt website](img/screenshot_website.png)
 
 ## Installations
 
