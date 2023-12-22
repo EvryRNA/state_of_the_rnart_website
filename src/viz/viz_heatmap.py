@@ -17,7 +17,8 @@ from src.enums.enums_heatmap import (
     ORDER_MODELS,
     PAPER_METRICS,
     RNA_NAMES,
-    SUB_METRICS, PAPER_SUP_METRICS,
+    SUB_METRICS,
+    PAPER_SUP_METRICS,
 )
 
 
@@ -54,9 +55,9 @@ class VizHeatmap:
         scores_df = pd.DataFrame(scores_df)
         scores_df = self._change_name(scores_df)
         scores_df = self.add_category(scores_df)
-        mask = ((scores_df["Metric_name"] == "INF-ALL") | (scores_df["Metric_name"] == "DI")) & (
-            scores_df["Model"] == "epRNA"
-        )
+        mask = (
+            (scores_df["Metric_name"] == "INF-ALL") | (scores_df["Metric_name"] == "DI")
+        ) & (scores_df["Model"] == "epRNA")
         # Use the boolean mask to drop the rows
         scores_df.loc[mask, "Metric"] = np.nan  # type: ignore
         return scores_df
@@ -109,7 +110,9 @@ class VizHeatmap:
             tickangle=45,
         )
         fig.update_layout(dict(plot_bgcolor="white"), margin=dict(l=0, r=5, b=0, t=20))
-        param_marker = dict(opacity=1, line=dict(width=0.5, color="DarkSlateGrey"), size=6)
+        param_marker = dict(
+            opacity=1, line=dict(width=0.5, color="DarkSlateGrey"), size=6
+        )
         fig.update_traces(marker=param_marker, selector=dict(mode="markers"))
         for annotation in fig["layout"]["annotations"]:
             annotation["text"] = annotation["text"].replace("Metric_name=", "")
@@ -130,7 +133,9 @@ class VizHeatmap:
         fig.update_xaxes(visible=True, showticklabels=False)
         if not is_complete:
             fig.update_layout(
-                legend=dict(yanchor="top", xanchor="right", x=0.41, y=-0.18, orientation="h"),
+                legend=dict(
+                    yanchor="top", xanchor="right", x=0.41, y=-0.18, orientation="h"
+                ),
             )
         return fig
 
@@ -147,7 +152,10 @@ class VizHeatmap:
             facet_row_spacing=0.19,
             facet_col_spacing=0.05,
             color_discrete_map=COLORS,
-            category_orders={"Model": ORDER_MODELS, "Metric_name": [x for x in METRICS if x in metrics]},
+            category_orders={
+                "Model": ORDER_MODELS,
+                "Metric_name": [x for x in METRICS if x in metrics],
+            },
         )
         fig = self._update_fig_box_plot(fig, is_complete=False)
         fig.update_xaxes(showticklabels=True)
@@ -156,23 +164,20 @@ class VizHeatmap:
             data["marker"] = dict(color="#000000", opacity=1, size=8)
         for cat, color in COLORS.items():
             fig.update_traces(fillcolor=color, selector=dict(name=cat))
-        fig.update_layout(width=1400, height=900, )
+        fig.update_layout(
+            width=1400,
+            height=900,
+        )
         return fig
-
 
     def plot_box_plot(self):
         return self._box_plot_by_method(PAPER_METRICS + PAPER_SUP_METRICS, name="all")
-
-    # def box_plot_by_method(self):
-    #     self._box_plot_by_method(PAPER_METRICS, name="paper")
-    #     self._box_plot_by_method(PAPER_SUP_METRICS, name="paper_sup")
 
     def _get_df_box_plot_ready(self, metrics: List = SUB_METRICS) -> pd.DataFrame:
         """Return the df used for box plots"""
         df = self.scores_df[self.scores_df["Metric_name"].isin(metrics)]
         # Take only the best model for each RNA
         df = df[df["Model"].isin(MODELS)]
-        df.loc[df["Metric"] > 150, "Metric"] = 150
         return df
 
     def normalize_metric(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -217,8 +222,6 @@ class VizHeatmap:
         df = df[df["Model"].isin(MODELS)]
         df = df[df["Metric_name"].isin(METRICS)]
         df = df[df["Metric_name"] == metric]
-        if metric == "DI":
-            df.loc[df["Metric"] > 100, "Metric"] = 100
         pivot_df = df.pivot(index="RNA_name", columns="Model", values="Metric")
         pivot_df = pivot_df.reindex(columns=ORDER_MODELS)
         return pivot_df
@@ -248,7 +251,9 @@ class VizHeatmap:
         fig.update_xaxes(**params_axes)
         fig.update_yaxes(**params_axes)
         fig.update_layout(dict(plot_bgcolor="white"), margin=dict(l=0, r=5, b=0, t=20))
-        param_marker = dict(opacity=1, line=dict(width=0.5, color="DarkSlateGrey"), size=6)
+        param_marker = dict(
+            opacity=1, line=dict(width=0.5, color="DarkSlateGrey"), size=6
+        )
         fig.update_traces(marker=param_marker, selector=dict(mode="markers"))
         fig.update_layout(coloraxis_colorbar_x=0.58)
         save_path = os.path.join("data", "plots", "heatmap", f"heatmap_{metric}.png")
@@ -270,8 +275,12 @@ class VizHeatmap:
         )
         fig.update_yaxes(**params_axes)
         fig.update_xaxes(**params_axes)
-        fig.update_layout(dict(plot_bgcolor="white"), margin=dict(l=10, r=5, b=10, t=20))
-        param_marker = dict(opacity=1, line=dict(width=0.5, color="DarkSlateGrey"), size=6)
+        fig.update_layout(
+            dict(plot_bgcolor="white"), margin=dict(l=10, r=5, b=10, t=20)
+        )
+        param_marker = dict(
+            opacity=1, line=dict(width=0.5, color="DarkSlateGrey"), size=6
+        )
         fig.update_traces(marker=param_marker, selector=dict(mode="markers"))
         fig.update_layout(
             font=dict(
@@ -310,19 +319,27 @@ class VizHeatmap:
     def update_colorbar_position(self, fig):
         pos_x = [0.425, 0.999]
         pos_y = [0.905, 0.635, 0.365, 0.09]
-        positions = [(pos_x[0], pos_y[0]), (pos_x[1], pos_y[0]),
-                     (pos_x[0], pos_y[1]), (pos_x[1], pos_y[1]),
-                    (pos_x[0], pos_y[2]), (pos_x[1], pos_y[2]),
-                    (pos_x[0], pos_y[3]), (pos_x[1], pos_y[3])]
-        color_all_axis = {f"coloraxis{i}": dict(colorbar_x=positions[i-1][0],
-                                                colorbar_y=positions[i-1][1],
-                                                colorbar_thickness=15,
-                                                colorbar_len=0.2,
-                                                ) for i in range(1, 9)}
-        fig.update_layout(width=900, height=900,
-                          **color_all_axis)
+        positions = [
+            (pos_x[0], pos_y[0]),
+            (pos_x[1], pos_y[0]),
+            (pos_x[0], pos_y[1]),
+            (pos_x[1], pos_y[1]),
+            (pos_x[0], pos_y[2]),
+            (pos_x[1], pos_y[2]),
+            (pos_x[0], pos_y[3]),
+            (pos_x[1], pos_y[3]),
+        ]
+        color_all_axis = {
+            f"coloraxis{i}": dict(
+                colorbar_x=positions[i - 1][0],
+                colorbar_y=positions[i - 1][1],
+                colorbar_thickness=15,
+                colorbar_len=0.2,
+            )
+            for i in range(1, 9)
+        }
+        fig.update_layout(width=900, height=900, **color_all_axis)
         return fig
-
 
     def plot_heatmap_t_paper(self, metrics: List, is_supp: bool = False):
         # Create a subplot with three rows and three columns
@@ -344,25 +361,28 @@ class VizHeatmap:
                     z=data,
                     y=data.index,
                     x=data.columns,
-                    colorbar = dict(thickness=50, len=4),
-                    coloraxis=f"coloraxis{row * 2 + col + 1}",
-                    colorscale="Viridis",
+                    colorbar=dict(thickness=50, len=4),
                     reversescale=metrics[index] not in ASC_METRICS,
+                    coloraxis=f"coloraxis{row * 2 + col + 1}",
                 )
-                fig.add_trace(heatmap, row=row+1, col=col+1)
-                fig = self._plot_heatmap_update_xaxes(fig, row+1, col+1)
-                fig = self._plot_heatmap_update_yaxes(fig, row+1, col+1)
+                fig.add_trace(heatmap, row=row + 1, col=col + 1)
+                fig = self._plot_heatmap_update_xaxes(fig, row + 1, col + 1)
+                fig = self._plot_heatmap_update_yaxes(fig, row + 1, col + 1)
+                fig.update_coloraxes(colorscale="viridis", row=row + 1, col=col + 1)
         fig = self._clean_fig(fig)
         fig = self.update_colorbar_position(fig)
         fig.update_annotations(font_size=16)
         return fig
 
-
     def plot_heatmap_t(self, metrics: List, name: str):
         # Create a subplot with three rows and three columns
         metrics = [x for x in metrics if x not in PAPER_METRICS]
         fig = sp.make_subplots(
-            rows=1, cols=2, horizontal_spacing=0.11, vertical_spacing=0.13, subplot_titles=metrics
+            rows=1,
+            cols=2,
+            horizontal_spacing=0.11,
+            vertical_spacing=0.13,
+            subplot_titles=metrics,
         )  # Adjust width
         len_color = 0.4
         positions = [(i, j) for j in [0.77, 0.22] for i in [0.44, 0.999]]
@@ -374,7 +394,9 @@ class VizHeatmap:
                 z=data,
                 y=data.index,
                 x=data.columns,
-                colorbar=dict(y=position[1], x=position[0], thickness=10, len=len_color),
+                colorbar=dict(
+                    y=position[1], x=position[0], thickness=10, len=len_color
+                ),
                 colorscale=colorscale,
             )
             row, col = i // 2 + 1, i % 2 + 1
