@@ -3,5 +3,5 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 COPY . .
-CMD ["python", "-m",  "src.dash_helper"]
-EXPOSE 8050
+CMD ["gunicorn", "--chdir", "src", "app:server", "-b", ":8000"]
+EXPOSE 8000
