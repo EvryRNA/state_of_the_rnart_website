@@ -8,7 +8,7 @@ NAMES_CLEAN = {
     "rnajp": "RNAJP",
     "mcsym": "MCSym",
     "isrna": "IsRNA1",
-    "ifoldrna": None,
+    "ifoldrna": "iFoldRNA",
     "simrna": None,
     "eprna": None,
 }

@@ -1,24 +1,30 @@
 from typing import List, Dict, Any
 
+import numpy as np
 from dash import Dash, dcc, html, Input, Output, callback
 import os
+
+from src.enums.enums_heatmap import PAPER_METRICS, OLD_TO_NEW
 from src.utils.utils import get_name_from_path
 from src.enums.enums import NAMES_CLEAN, STYLE_H, STYLE_SCORE
 from dash_bio.utils import PdbParser, create_mol3d_style
 import dash_bio
+import pandas as pd
 
 import dash
 
 
 class Viz3D:
-    def __init__(self, native_path: str, rna_dir: str, puzzle: str, app: Dash):
+    def __init__(self, native_path: str, rna_dir: str, scores_dir: str, puzzle: str, app: Dash):
         """
         :param native_path: path to native structures
         :param rna_dir: path to the aligned structures
+        :param scores_dir: path to the scores
         :param puzzle: name of the puzzle (casp or rna-puzzles)
         """
         self.native_path = native_path
         self.rna_dir = rna_dir
+        self.scores_dir = scores_dir
         self.all_challenges = sorted(os.listdir(self.rna_dir))
         # Drop R1117 for the moment
         if "R1117" in self.all_challenges:
@@ -78,6 +84,7 @@ class Viz3D:
                 "flexDirection": "row",
                 "gap": 3,
                 "justifyContent": "center",
+                "marginBottom": 10,
             },
             children=[
                 self.get_method_viz(method, rna_challenge, all_models)
@@ -106,31 +113,56 @@ class Viz3D:
                 self.names_to_path[rna_challenge][model_name],
             )
             is_native = False
+        try:
+            scores_df = pd.read_csv(os.path.join(self.scores_dir, f"{rna_challenge}.csv"), index_col=0)
+            scores_df = scores_df.rename(OLD_TO_NEW, axis = 1)
+            scores = self.get_name_scores(in_path, scores_df, is_native)
+        except FileNotFoundError:
+            scores = {}
         output = self.get_data_styles(
-            in_path, NAMES_CLEAN[method_name], is_native=is_native
+            in_path, NAMES_CLEAN[method_name], scores, is_native=is_native
         )
         return output
 
-    def get_data_styles(self, in_path: str, method_name: str, is_native: bool = False):
+    def get_name_scores(self, in_path: str, scores_df: pd.DataFrame, is_native: bool = False):
+        """
+        Finds the name from the scoring dataframe
+        """
+        if is_native:
+            return None
+        basename = os.path.basename(in_path)
+        name = basename.split("_")[:-2]
+        original_name = "normalized_" + "_".join(name) + ".pdb"
+        try:
+            scores = scores_df[scores_df.index == original_name][PAPER_METRICS ].to_dict()
+        except KeyError:
+            metrics = PAPER_METRICS.copy()
+            metrics.remove("εRMSD")
+            metrics.remove("lDDT")
+            scores = scores_df[scores_df.index == original_name][metrics ].to_dict()
+        new_scores = {key : scores[key][original_name] for key in scores}
+        return new_scores
+
+    def get_data_styles(self, in_path: str, method_name: str, scores: Dict, is_native: bool = False):
         content = self.get_viz_3d_data(in_path, is_native=is_native)
         if is_native:
-            children = [
-                html.H3(method_name, style=STYLE_H),
-                html.H3("No prediction", style=STYLE_SCORE),
-            ]
+            metrics = html.H3("No prediction", style=STYLE_SCORE),
             self.counter += 1
         else:
-            title = self.get_title_from_path(in_path)
-            name = list(title.keys())[0]
-            children = [
-                html.H3(method_name, style=STYLE_H),
-                html.H3(f"TM-score: {title[name]['TM-score']:.3f}", style=STYLE_SCORE),
-            ]
+            scores = [f"{key}:{value:.2f}" for key, value in scores.items() if not np.isnan(value)]
+            scores = " | ".join(scores)
+            metrics = html.H3(scores, style={**STYLE_SCORE,
+                                             **{"fontSize": "15px", "width": "70%", "margin": "0 auto",
+                                                }})
+        children = [
+            html.H3(method_name, style={**STYLE_H, "margin": "0 auto", "width": "70%"}),
+            metrics
+        ]
         children.append(content)
         div_id = (
             self.puzzle + "_" + in_path + str(self.counter) if is_native else in_path
         )
-        div = html.Div(id=div_id, children=children)
+        div = html.Div(id=div_id, children=children, style={"margin": "0 auto"})
         return div
 
     def get_title_from_path(self, in_path: str):
@@ -175,7 +207,7 @@ class Viz3D:
     def get_native_structure(self, rna_challenge: str):
         native_path = os.path.join(self.native_path, f"{rna_challenge}.pdb")
         content = self.get_viz_3d_data(
-            native_path, width=600, height=400, is_native=True
+            native_path, width=900, height=600, is_native=True
         )
         title = "RNA-Puzzles" if self.puzzle == "rna_puzzles" else "CASP-RNA"
         children = [
@@ -208,7 +240,7 @@ class Viz3D:
                     "height": "50px",
                     "border-radius": "15px",
                     "fontSize": "30px",
-                    "color": "blac",
+                    "color": "black",
                 },
             ),
             html.Br(),
@@ -218,9 +250,10 @@ class Viz3D:
         div = html.Div(
             id=f"native_structure_{self.puzzle}",
             children=children,
-            style={"width": "100"},
+            style={"width": "100%"},
         )
         return div
+
 
     def get_viz_3d_data(
         self, in_path: str, width=450, height=450, is_native: bool = False
@@ -245,7 +278,9 @@ class Viz3D:
                 "height": height,
                 "textAlign": "center",
                 "margin": "0 auto",
+                "marginBottom": "20px"
             },
+            zoom={"factor": 1.3}
         )
         return content
 

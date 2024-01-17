@@ -30,8 +30,8 @@ class DashHelper:
         self.casp_rna_native = casp_rna_native
         self.casp_rna_dir = casp_rna_dir
         self.challenge = "rna_puzzles"
-        self.viz3d = Viz3D(native_path, rna_dir, "rna_puzzles", self.app)
-        self.viz_casp = Viz3D(casp_rna_native, casp_rna_dir, "casp", self.app)
+        self.viz3d = Viz3D(native_path, rna_dir, scores_dir, "rna_puzzles", self.app)
+        self.viz_casp = Viz3D(casp_rna_native, casp_rna_dir, scores_dir_casp, "casp", self.app)
         self.viz_table_rna_puzzles = VizTables(scores_dir, "rna_puzzles", self.app)
         self.viz_table_casp = VizTables(scores_dir_casp, "casp", self.app)
         self.viz_table = self.get_viz_table()

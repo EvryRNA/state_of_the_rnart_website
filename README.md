@@ -30,5 +30,5 @@ docker run -it -p 8050:8050 state_of_the_rnart_website
 To run the program, you can use:
 
 ```
-python -m src.dash_helper
+gunicorn --chdir src dash_helper:server -b :8000
 ```

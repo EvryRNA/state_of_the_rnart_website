@@ -115,7 +115,7 @@ OLD_TO_NEW = {
     "isrna": "IsRNA1",
     "3drna": "3dRNA",
     "rhofold": "RhoFold",
-    # "ifoldrna": "iFoldRNA",
+    "ifoldrna": "iFoldRNA",
     "vfold": "Vfold3D",
     "eprna": "epRNA",
     "rp14_free": "rp14f",
