@@ -8,8 +8,10 @@ import dash
 import pandas as pd
 import numpy as np
 
+from src.enums.links import PREDS_PREFIX_LINK
 from src.enums.styles import STYLE_SCORE, STYLE_H, BUTTON_STYLE
 from src.enums.viz_enums import NAMES_CLEAN, OLD_TO_NEW, METRICS
+from src.page.utils.dash_utils import get_button
 from src.page.utils.viz_utils import get_viz_3d_data
 
 
@@ -20,19 +22,18 @@ class VizPreds:
         self.all_challenges = self.get_all_challenges(pred_paths)
         self.scores_dir = scores_dir
         self.names_to_path = self.get_names_to_path()
-        self.all_methods = [x for x in list(NAMES_CLEAN.keys()) if x not in ["eprna"]]
-        self.all_methods_index = {
-            method: i for i, method in enumerate(self.all_methods)
-        }
+        self.all_methods = [
+            x for x in list(NAMES_CLEAN.keys()) if x not in ["eprna"]
+        ]
+        self.all_methods_index = {method: i for i, method in enumerate(self.all_methods)}
         app.callback(
             dash.dependencies.Output("3d_structures_shown", "children"),
-            [
-                dash.dependencies.Input("dropdown_challenges", "value"),
-                dash.dependencies.Input("button-dataset", "value"),
-            ],
+            [dash.dependencies.Input("dropdown_challenges", "value"),
+             dash.dependencies.Input("button-dataset", "value"),
+             ],
             allow_duplicate=True,
             prevent_initial_call=True,
-            suppress_callback_exceptions=True,
+            suppress_callback_exceptions=True
         )(self.update_dropdown)
 
     def update_dropdown(self, rna_name, benchmark):
@@ -46,21 +47,15 @@ class VizPreds:
         for benchmark, challenges in self.all_challenges.items():
             c_paths = {}
             for challenge in challenges:
-                c_paths[challenge] = {
-                    method: os.path.join(self.pred_paths[benchmark], challenge, method)
-                    for method in os.listdir(
-                        os.path.join(self.pred_paths[benchmark], challenge)
-                    )
-                }
+                c_paths[challenge] = {method: os.path.join(self.pred_paths[benchmark], challenge, method)
+                                      for method in os.listdir(os.path.join(self.pred_paths[benchmark], challenge))}
             names_to_path[benchmark] = c_paths
         return names_to_path
 
     def get_all_challenges(self, native_paths: Dict):
         all_challenges = {}
         for benchmark, path in native_paths.items():
-            all_challenges[benchmark] = [
-                rna_name.replace(".pdb", "") for rna_name in os.listdir(path)
-            ]
+            all_challenges[benchmark] = [rna_name.replace(".pdb", "") for rna_name in os.listdir(path)]
         return all_challenges
 
     def get_plot(self, benchmark: str, rna_name: str):
@@ -75,7 +70,6 @@ class VizPreds:
             },
             id="3d_structures_shown",
         )
-
     def get_all_plots_3d(self, benchmark: str, rna_name: str):
         all_models = self.get_all_models(benchmark, rna_name)
         row = html.Div(
@@ -83,12 +77,11 @@ class VizPreds:
                 dbc.Row(html.Hr(style={"height": "15px"})),
                 dbc.Row(
                     [
-                        dbc.Col(content, style={"margin-bottom": "20px"})
-                        for content in all_models
+                        dbc.Col(content,style={"margin-bottom": "20px"}) for content in all_models
                     ]
                 ),
             ],
-            style={"width": "70%", "margin": "0 auto", "justify-content": "center"},
+            style={"width": "70%", "margin": "0 auto", "justify-content": "center"}
         )
         return row
 
@@ -97,24 +90,16 @@ class VizPreds:
         Return the different models for this challenge
         """
         scores, new_models = self.get_scores(benchmark, rna_challenge)
-        content = [
-            self.get_viz_3d(method_name, rna_challenge, benchmark, scores)
-            for method_name in new_models
-        ]
+        content = [self.get_viz_3d(method_name, rna_challenge, benchmark, scores) for method_name in new_models]
         return content
 
     def get_scores(self, benchmark: str, rna_challenge: str):
-        scores = pd.read_csv(
-            os.path.join(self.scores_dir.get(benchmark), f"{rna_challenge}.csv"),
-            index_col=0,
-        )
+        scores = pd.read_csv(os.path.join(self.scores_dir.get(benchmark), f"{rna_challenge}.csv"), index_col=0)
         new_models = [method for method in self.all_methods]
         for name in scores.index:
             method = name.replace("normalized_", "").split("_")[0]
             if method in self.all_methods_index:
-                new_models[self.all_methods_index[method]] = name.replace(
-                    "normalized_", ""
-                )
+                new_models[self.all_methods_index[method]] = name.replace("normalized_", "")
         return scores, new_models
 
     def get_name_and_decoys(self, in_paths: List):
@@ -136,9 +121,7 @@ class VizPreds:
                 output[method] = [method]
         return output
 
-    def get_viz_3d(
-        self, method_name: str, rna_challenge: str, benchmark: str, scores: pd.DataFrame
-    ):
+    def get_viz_3d(self, method_name: str, rna_challenge: str, benchmark: str, scores: pd.DataFrame):
         if method_name.endswith(".pdb"):
             in_path = self.names_to_path[benchmark][rna_challenge][method_name]
             scores = scores.rename(OLD_TO_NEW, axis=1)
@@ -148,7 +131,9 @@ class VizPreds:
             in_path = os.path.join("data", "null_structure.pdb")
             text_scores = "No prediction"
             name = NAMES_CLEAN[method_name]
-        output = self.get_data_styles(in_path, name, text_scores)
+        output = self.get_data_styles(
+            in_path, name, text_scores
+        )
         return output
 
     def get_name_scores(self, in_path: str, scores_df: pd.DataFrame):
@@ -165,38 +150,19 @@ class VizPreds:
     def get_data_styles(self, in_path: str, method_name: str, scores: Dict):
         content = get_viz_3d_data(in_path, is_native=False)
         try:
-            scores = [
-                f"{key}:{value:.2f}"
-                for key, value in scores.items()
-                if not np.isnan(value)
-            ]
+            scores = [f"{key}:{value:.2f}" for key, value in scores.items() if not np.isnan(value)]
             scores = " | ".join(scores)
         except AttributeError:
             scores = "No prediction"
-        metrics = html.H3(
-            scores,
-            style={
-                **STYLE_SCORE,
-                **{"fontSize": "15px", "width": "70%", "margin": "0 auto"},
-            },
-        )
+        metrics = html.H3(scores, style={**STYLE_SCORE,
+                                         **{"fontSize": "15px", "width": "70%", "margin": "0 auto"}})
         children = [
             html.H3(method_name, style={**STYLE_H, "margin": "0 auto", "width": "70%"}),
-            metrics,
+            metrics
         ]
         children.append(html.Div(content, id=in_path.replace(".pdb", "")))
-        button = html.Button(
-            "Download",
-            n_clicks=0,
-            style={
-                **BUTTON_STYLE,
-                **{
-                    "color": "white",
-                    "background-color": "#1f447a",
-                    "margin-bottom": "50px",
-                },
-            },
-        )
+        button_link = os.path.join(PREDS_PREFIX_LINK, in_path)
+        button = get_button("Download", button_link, "#1f447a")
         children.append(button)
         div = html.Div(children=children, style={"margin": "0 auto"})
         return div
