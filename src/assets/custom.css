@@ -2,10 +2,20 @@
     font-family: 'Abel';
     src: url('font/Abel/Abel-Regular.ttf');
 }
+@font-face {
+    font-family: 'EB Garamond';
+    src: url("font/EB_Garamond/EBGaramond-Variable_wght.ttf");
+}
+
+@font-face {
+    font-family: 'IBMP';
+    src: url("font/IBM_Plex_Sans/IBMPlexSans-Regular.ttf");
+}
 
 body {
     text-align: center;
     font-family: "Abel";
+    /*font-family: "IBMP";*/
 }
 
 @keyframes fadein {
