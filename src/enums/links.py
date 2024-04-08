@@ -144,5 +144,5 @@ TIMELINE_TEXT = {
     },
 }
 
-NATIVE_PREFIX_LINK = "https://github.com/EvryRNA/state_of_the_rnart_website/blob/dev/src/data"
-PREDS_PREFIX_LINK = "https://github.com/EvryRNA/state_of_the_rnart_website/blob/dev/src"
+NATIVE_PREFIX_LINK = "https://github.com/EvryRNA/state_of_the_rnart_website/blob/main/src/data"
+PREDS_PREFIX_LINK = "https://github.com/EvryRNA/state_of_the_rnart_website/blob/main/src"
