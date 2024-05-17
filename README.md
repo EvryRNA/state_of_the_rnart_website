@@ -5,7 +5,7 @@
 
 # State-of-the-RNArt website
 
-This repository is the source code for the dashboard of [https://evryrna.ibisc.univ-evry.fr/RNARt/](State-of-the-RNArt)
+This repository is the source code for the dashboard of [`State-of-the-RNArt`](https://evryrna.ibisc.univ-evry.fr/RNARt/)
 <br> It also contains the aligned structures for each prediction for the <br> three test sets: `RNA_PUZZLES`, `CASP_RNA` and `RNASOLO`.
 
 [![Article][article_img]][article_url]
