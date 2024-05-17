@@ -3,9 +3,9 @@
 <a href="https://doi.org/10.1093/nargab/lqae048" target="_blank" title="Go to article"><img width="500px" alt="logo" src="img/logo.svg"></a>
 <a name="readme-top"></a>
 
-# State-of-the-RNArt dashboard
+# State-of-the-RNArt website
 
-This repository is the source code for the dashboard of [https://evryrna.ibisc.univ-evry.fr/RNARt/](`State-of-the-RNArt`)
+This repository is the source code for the dashboard of [https://evryrna.ibisc.univ-evry.fr/RNARt/](State-of-the-RNArt)
 <br> It also contains the aligned structures for each prediction for the <br> three test sets: `RNA_PUZZLES`, `CASP_RNA` and `RNASOLO`.
 
 [![Article][article_img]][article_url]
