@@ -2,7 +2,7 @@ from dash import html
 
 from src.enums.colors import PURPLE, DARK_BLUE, BLUE
 
-MORE_INFORMATION_TITLE = "https://www.biorxiv.org/content/10.1101/2023.12.22.573067v2"
+MORE_INFORMATION_TITLE = "https://doi.org/10.1093/nargab/lqae048"
 CONTACT_US_FOOTER = html.A("fariza.tahi@univ-evry.fr", href="mailto:fariza.tahi@univ-evry.fr")
 TEXT_RNASOLO_CASE = {
     "title": "RNAsolo",
@@ -141,6 +141,18 @@ TIMELINE_TEXT = {
         "paper": "https://pubmed.ncbi.nlm.nih.gov/36864729/",
         "code": "http://rna.physics.missouri.edu/RNAJP/index.html",
         "web_server": ""
+    },
+    "AlphaFold3": {
+        "title": "AlphaFold3",
+        "text": "AlphaFold3 is a deep learning model that predicts 3D structures of "
+                "multiple biomolecules. It uses MSA, pair representation with diffusion-based "
+                "approach, and transformer networks.",
+        "year": "2024",
+        "input": "Raw sequence, MSA",
+        "method": "Deep Learning",
+        "paper": "https://www.nature.com/articles/s41586-024-07487-w",
+        "code": "",
+        "web_server": "https://alphafoldserver.com/"
     },
 }
 

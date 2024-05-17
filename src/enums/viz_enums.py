@@ -53,6 +53,7 @@ OLD_TO_NEW = {
     "vfoldpipeline": "Vfold-Pipeline",
     "rnajp": "RNAJP",
     "simrna": "SimRNA",
+    "alphafold3": "AlphaFold3",
 }
 METRICS = [
     "RMSD",
@@ -78,17 +79,18 @@ TO_NORMALISED_METRICS = [
 
 DESC_METRICS = ["RMSD", "P-VALUE", "DI", "εRMSD", "MCQ"]
 NAMES_CLEAN = {
-    "3drna": "3dRNA",
-    "vfoldpipeline": "VfoldPipeline",
-    "rhofold": "RhoFold",
-    "rnacomposer": "RNAComposer",
-    "trrosettarna": "trRosettaRNA",
-    "vfold": "Vfold3D",
+    "alphafold3": "AlphaFold3",
     "rnajp": "RNAJP",
-    "mcsym": "MCSym",
+    "vfoldpipeline": "VfoldPipeline",
+    "trrosettarna": "trRosettaRNA",
+    "rhofold": "RhoFold",
     "isrna": "IsRNA1",
-    "ifoldrna": "iFoldRNA",
     "simrna": "SimRNA",
+    "3drna": "3dRNA",
+    "rnacomposer": "RNAComposer",
+    "vfold": "Vfold3D",
+    "mcsym": "MCSym",
+    "ifoldrna": "iFoldRNA",
 }
 STYLE_3D = {
     "width": None,
@@ -99,4 +101,10 @@ STYLE_3D = {
     "border": "2px solid black",
     "border-radius": "500px",
     "background-color": None,
+}
+
+FIRST_CHALLENGE = {
+    "rna_puzzles": "rp03",
+    "casp": "R1107",
+    "rnasolo": "1YFG"
 }

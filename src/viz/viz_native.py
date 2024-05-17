@@ -42,8 +42,10 @@ class VizNative:
             value = rna_name
         else:
             dropdown, value = no_update, no_update
+        rna_name = rna_name.replace("rp14b", "rp14_bound").replace("rp14f", "rp14_free")
         content, title = self.get_updatable_elements(benchmark, rna_name)
         native_path = os.path.join(self.native_paths.get(benchmark), f"{rna_name}.pdb")
+
         content = molstar_helper.parse_molecule(native_path)
         table = self.get_plot_table(benchmark, rna_name)
         return content, title, dropdown, value, table

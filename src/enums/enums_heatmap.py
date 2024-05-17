@@ -54,6 +54,7 @@ ALL_MODELS = [
     "trrosettarna",
     "vfoldpipeline",
     "rnajp",
+    "alphafold3"
 ]
 # Higher is better
 ASC_METRICS = ["INF-ALL", "TM-score", "GDT-TS", "lDDT"]
@@ -101,6 +102,7 @@ MODELS_TO_GROUP = {
     "trRosettaRNA": "Deep learning",
     "Vfold-Pipeline": "Template-based",
     "RNAJP": "Ab initio",
+    "AlphaFold3": "Deep Learning"
 }
 ORDER_MODELS = list(MODELS_TO_GROUP.keys())
 MODELS = list(MODELS_TO_GROUP.keys())
@@ -125,5 +127,6 @@ OLD_TO_NEW = {
     "mcsym": "MC-Sym",
     "vfoldpipeline": "Vfold-Pipeline",
     "rnajp": "RNAJP",
+    "alphafold3": "AlphaFold3",
     # "INF-ALL": r"$INF_{all}$"
 }

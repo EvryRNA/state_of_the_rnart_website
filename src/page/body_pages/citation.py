@@ -24,7 +24,7 @@ class Citation(AbstractPage):
                             "Clément Bernard, Guillaume Postic, Sahar Ghannay, Fariza Tahi"
                         ),
                     ],
-                    cite="bioRxiv 2023.12.22.573067; doi: https://doi.org/10.1101/2023.12.22.573067",
+                    cite="NAR Genomics and Bioinformatics, Volume 6, Issue 2, June 2024, lqae048, https://doi.org/10.1093/nargab/lqae048",
                     style={
                         "width": "50%",
                         "margin": "0 auto",

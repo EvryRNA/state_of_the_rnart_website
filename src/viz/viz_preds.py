@@ -10,7 +10,7 @@ import numpy as np
 
 from src.enums.links import PREDS_PREFIX_LINK
 from src.enums.styles import STYLE_SCORE, STYLE_H, BUTTON_STYLE
-from src.enums.viz_enums import NAMES_CLEAN, OLD_TO_NEW, METRICS
+from src.enums.viz_enums import NAMES_CLEAN, OLD_TO_NEW, METRICS, FIRST_CHALLENGE
 from src.page.utils.dash_utils import get_button
 from src.page.utils.viz_utils import get_viz_3d_data
 
@@ -39,7 +39,7 @@ class VizPreds:
     def update_dropdown(self, rna_name, benchmark):
         triggered_id = ctx.triggered_id
         if triggered_id == "button-dataset":
-            rna_name = self.all_challenges.get(benchmark)[0]
+            rna_name = FIRST_CHALLENGE.get(benchmark)
         return self.get_plot(benchmark, rna_name)
 
     def get_names_to_path(self):
@@ -94,6 +94,7 @@ class VizPreds:
         return content
 
     def get_scores(self, benchmark: str, rna_challenge: str):
+        rna_challenge = rna_challenge.replace("rp14b", "rp14_bound").replace("rp14f", "rp14_free")
         scores = pd.read_csv(os.path.join(self.scores_dir.get(benchmark), f"{rna_challenge}.csv"), index_col=0)
         new_models = [method for method in self.all_methods]
         for name in scores.index:
@@ -123,6 +124,7 @@ class VizPreds:
 
     def get_viz_3d(self, method_name: str, rna_challenge: str, benchmark: str, scores: pd.DataFrame):
         if method_name.endswith(".pdb"):
+            rna_challenge = rna_challenge.replace("rp14b", "rp14_bound").replace("rp14f", "rp14_free")
             in_path = self.names_to_path[benchmark][rna_challenge][method_name]
             scores = scores.rename(OLD_TO_NEW, axis=1)
             text_scores = self.get_name_scores(in_path, scores)
